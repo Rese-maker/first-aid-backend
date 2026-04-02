@@ -1,5 +1,18 @@
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+    process.exit(1);
+});
+if (!process.env.DEEPSEEK_API_KEY) {
+    console.error('FATAL: DEEPSEEK_API_KEY environment variable is not set.');
+    process.exit(1);
+}const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
 });
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection:', reason);
