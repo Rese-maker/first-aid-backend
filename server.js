@@ -1,24 +1,4 @@
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    process.exit(1);
-});
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection:', reason);
-    process.exit(1);
-});
-if (!process.env.DEEPSEEK_API_KEY) {
-    console.error('FATAL: DEEPSEEK_API_KEY environment variable is not set.');
-    process.exit(1);
-}const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-});
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection:', reason);
-});
 require('dotenv').config();
-console.log('DEEPSEEK_API_KEY:', process.env.DEEPSEEK_API_KEY ? '已加载' : '未加载');
 const express = require('express');
 const cors = require('cors');
 const OpenAI = require('openai');
@@ -26,13 +6,24 @@ const OpenAI = require('openai');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.get('/test', (req, res) => {
-    res.json({ message: 'Backend is alive' });
-});
-// 初始化 DeepSeek (使用 OpenAI 兼容接口)
+
+// 检查 API Key 是否存在（放在 dotenv 之后）
+if (!process.env.DEEPSEEK_API_KEY) {
+    console.error('FATAL: DEEPSEEK_API_KEY environment variable is not set.');
+    process.exit(1);
+}
+
+console.log('DEEPSEEK_API_KEY is set. Starting server...');
+
+// 初始化 DeepSeek 客户端
 const client = new OpenAI({
     baseURL: 'https://api.deepseek.com/v1',
-    apiKey: process.env.DEEPSEEK_API_KEY,  // 从 .env 文件读取
+    apiKey: process.env.DEEPSEEK_API_KEY,
+});
+
+// 测试路由
+app.get('/test', (req, res) => {
+    res.json({ message: 'Backend is alive' });
 });
 
 // 1. 评估单个急救方法
@@ -55,7 +46,7 @@ app.post('/api/evaluate-method', async (req, res) => {
         const result = JSON.parse(completion.choices[0].message.content);
         res.json(result);
     } catch (error) {
-        console.error(error);
+        console.error('DeepSeek API error:', error);
         res.status(500).json({ correct: false, reason: "AI service error. Please try again." });
     }
 });
@@ -86,10 +77,11 @@ app.post('/api/evaluate-order', async (req, res) => {
         const result = JSON.parse(completion.choices[0].message.content);
         res.json(result);
     } catch (error) {
-        console.error(error);
+        console.error('DeepSeek API error:', error);
         res.status(500).json({ success: false, feedback: "AI order check failed." });
     }
 });
 
+// 监听端口（Railway 会提供 PORT 环境变量）
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
