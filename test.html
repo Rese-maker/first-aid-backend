@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Test Local API</h1>
+    <button onclick="testAPI()">Click to test</button>
+    <pre id="result"></pre>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:3000/api";
+
+        async function testAPI() {
+            const resultElem = document.getElementById('result');
+            resultElem.textContent = 'Testing...';
+            try {
+                const response = await fetch(API_BASE + '/evaluate-method', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ method: 'cool water' })
+                });
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
