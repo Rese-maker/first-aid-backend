@@ -40,7 +40,7 @@ RULES:
   Reason: "Burn ointment can be used on unbroken skin for first-degree burns to soothe and prevent infection. Do not apply on broken skin, open blisters, or second/third-degree burns."
 - If the method is "honey", "pure honey", or "medical honey":
   Set "correct": true.
-  Reason: "Honey has mild antibacterial and moisturizing effects and can be used on minor first-degree burns with unbroken skin. It is not a substitute for professional burn medication. Do not use on severe burns or open wounds as it may increase infection risk."
+  Reason: "Honey can be used ONLY on very mild first-degree burns with unbroken skin (e.g., slight sunburn). For severe burns or open wounds, honey is dangerous and may worsen infection. Never use honey on second/third-degree burns or broken skin."
 - If the method is "cool water", "cool running water", "cool tap water":
   Set "correct": true. Reason: "Cool running water for 10-20 minutes is the correct first step for minor burns."
 - If the method is dangerous (e.g., "butter", "oil", "ice directly", "toothpaste", "soy sauce", "pop blisters"):
@@ -73,17 +73,17 @@ app.post('/api/evaluate-order', async (req, res) => {
     else if (patientType === 'second') degreeText = 'Second-degree burn (blisters, deep partial thickness)';
     else degreeText = 'Third-degree burn (full thickness, may be painless, needs hospital)';
 
-    const prompt = `You are a first aid expert for high school students. 
+    const prompt = `You are a first aid expert for high school students.
 Patient type: ${degreeText}.
 Student's steps (in order): ${steps.join(' → ')}.
 
 Rules for correct first aid:
-- FIRST-DEGREE burn (red, dry, no blisters): Steps should include: cool water for 10-20 minutes, gently dry, remove clothing if not stuck, cover with clean cloth. Burn ointment is optional on unbroken skin. DO NOT require hospital.
-- SECOND-DEGREE burn (blisters, wet): Do NOT apply ice. Cool water is acceptable. Cover loosely. Seek medical help if large area or on face/hands/feet. For school exercise, recommend hospital if serious.
-- THIRD-DEGREE burn (black/white, charred, possibly painless): DO NOT apply water. Cover with clean cloth. Immediately go to hospital. Do not remove stuck clothing.
+- FIRST-DEGREE burn (red, dry, no blisters): Acceptable steps: cool water, gently dry, remove clothing if not stuck, cover with clean cloth, apply burn ointment or honey (only on unbroken skin). Hospital not required.
+- SECOND-DEGREE burn (blisters, wet): Do NOT apply ice or honey. Cool water is acceptable. Cover loosely. Seek medical help if large area or on face/hands/feet.
+- THIRD-DEGREE burn (black/white, charred, possibly painless): Do NOT apply water. Do NOT apply honey or ointment. Cover with clean cloth. Immediately go to hospital. Do not remove stuck clothing.
+- Face burn: ensure breathing.
 
-Also: Face burn: ensure breathing. Do not apply water if third-degree.
-
+If the student's steps include "honey" or "burn ointment", only allow them for first-degree burns; for second/third-degree, mark as incorrect.
 Evaluate if the student's sequence is appropriate for the given degree.
 Respond in JSON: {"success": true/false, "feedback": "explain what is wrong or congratulate if correct, 1-2 sentences for high school students"}.`;
     try {
