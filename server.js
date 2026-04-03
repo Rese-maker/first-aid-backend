@@ -38,9 +38,9 @@ RULES:
 - If the method is "burn ointment", "antibiotic cream", "burn cream", or "烫伤膏": 
   Set "correct": true. 
   Reason: "Burn ointment can be used on unbroken skin for first-degree burns to soothe and prevent infection. Do not apply on broken skin, open blisters, or second/third-degree burns."
-- If the method is "honey", "pure honey", or "medical honey":
+- If the method is "honey", "pure honey", "medical honey", "aloe vera", "pure aloe vera", "coconut oil", "virgin coconut oil":
   Set "correct": true.
-  Reason: "Honey can be used ONLY on very mild first-degree burns with unbroken skin (e.g., slight sunburn). For severe burns or open wounds, honey is dangerous and may worsen infection. Never use honey on second/third-degree burns or broken skin."
+  Reason: "This substance has mild soothing/moisturizing properties and may be used on very minor first-degree burns with unbroken skin. It is not a substitute for professional burn medication. Do not use on severe burns or open wounds as it may trap heat or increase infection risk."
 - If the method is "cool water", "cool running water", "cool tap water":
   Set "correct": true. Reason: "Cool running water for 10-20 minutes is the correct first step for minor burns."
 - If the method is dangerous (e.g., "butter", "oil", "ice directly", "toothpaste", "soy sauce", "pop blisters"):
