@@ -31,18 +31,21 @@ app.post('/api/evaluate-method', async (req, res) => {
     const { method } = req.body;
     if (!method) return res.status(400).json({ error: 'Method required' });
 
-    const prompt = `You are a first aid educator for high school students.
+   const prompt = `You are a first aid educator for high school students.
 The student proposes a method: "${method}".
 
 RULES:
 - If the method is "burn ointment", "antibiotic cream", "burn cream", or "烫伤膏": 
   Set "correct": true. 
   Reason: "Burn ointment can be used on unbroken skin for first-degree burns to soothe and prevent infection. Do not apply on broken skin, open blisters, or second/third-degree burns."
+- If the method is "honey", "pure honey", or "medical honey":
+  Set "correct": true.
+  Reason: "Honey has mild antibacterial and moisturizing effects and can be used on minor first-degree burns with unbroken skin. It is not a substitute for professional burn medication. Do not use on severe burns or open wounds as it may increase infection risk."
 - If the method is "cool water", "cool running water", "cool tap water":
   Set "correct": true. Reason: "Cool running water for 10-20 minutes is the correct first step for minor burns."
 - If the method is dangerous (e.g., "butter", "oil", "ice directly", "toothpaste", "soy sauce", "pop blisters"):
   Set "correct": false. Reason: "This is dangerous because ..."
-- For any other method, use your medical knowledge: if safe under standard first aid guidelines, set "correct": true and give a short reason; if unsafe, set "correct": false.
+- For any other method, use your medical knowledge: if safe under standard first aid guidelines, set "correct": true and give a short reason with conditions if needed; if unsafe, set "correct": false.
 
 Respond ONLY in valid JSON: {"correct": true/false, "reason": "one short sentence for high school students"}.`;
     try {
