@@ -31,15 +31,20 @@ app.post('/api/evaluate-method', async (req, res) => {
     const { method } = req.body;
     if (!method) return res.status(400).json({ error: 'Method required' });
 
-    const prompt = `You are a professional first aid educator for high school students. 
-Evaluate the following burn treatment method: "${method}".
-Rules:
-- Burn ointment (e.g., antibiotic cream) is safe to apply on unbroken skin (first-degree burns with no open wounds or blisters). If the skin is broken or blistered, do not apply ointment.
-- Cool running water (not ice) for 10-20 minutes is correct for first-degree and some second-degree burns.
-- Do not apply ice, butter, oil, toothpaste, or soy sauce.
-- Do not pop blisters.
-- If the method is partially correct depending on the situation (e.g., ointment), you may say "Partially correct: can be used on unbroken skin, but not on open wounds."
-Respond in JSON: {"correct": true/false, "reason": "short educational explanation (1 sentence for high school students)"}.`;
+    const prompt = `You are a first aid educator for high school students.
+The student proposes a method: "${method}".
+
+RULES:
+- If the method is "burn ointment", "antibiotic cream", "burn cream", or "烫伤膏": 
+  Set "correct": true. 
+  Reason: "Burn ointment can be used on unbroken skin for first-degree burns to soothe and prevent infection. Do not apply on broken skin, open blisters, or second/third-degree burns."
+- If the method is "cool water", "cool running water", "cool tap water":
+  Set "correct": true. Reason: "Cool running water for 10-20 minutes is the correct first step for minor burns."
+- If the method is dangerous (e.g., "butter", "oil", "ice directly", "toothpaste", "soy sauce", "pop blisters"):
+  Set "correct": false. Reason: "This is dangerous because ..."
+- For any other method, use your medical knowledge: if safe under standard first aid guidelines, set "correct": true and give a short reason; if unsafe, set "correct": false.
+
+Respond ONLY in valid JSON: {"correct": true/false, "reason": "one short sentence for high school students"}.`;
     try {
         const completion = await client.chat.completions.create({
             model: 'deepseek-chat',
